@@ -1,0 +1,55 @@
+{% extends 'layout/base.html' %}
+
+{% block style %}
+    <style>
+        html, body{
+            height: 100%;
+        }
+
+        .container {
+            height: 100%;
+        }
+        
+        .title {
+            font-size: 3rem;
+        }
+    </style>
+{% endblock style %}
+
+{% block content %}
+
+    {% if user.is_authenticated %}
+
+        <div style="display:flex; align-items:center; justify-content:center; height:100%;">
+            <div>
+                <div style="display: flex; align-items:center; justify-content:space-between;">
+                    <h1 class="pt-5 mx-auto text-center title">Movie Recommender System</h1>
+                    <a href="{% url 'logout' %} ">Logout</a>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="box">
+                            <div class="box-body">
+                                <div class="col" id="searchbar"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="recommended-movies" style="display:flex; align-items: center; justify-content: center;">
+                    
+                </div>
+            </div>
+        </div>
+
+    {% else %}
+        <div class="alert alert-success" role="alert">
+            <h1>Welcome to Authentication System!</h1>
+        </div>
+        <div class="center">
+            <a class="a1" href="{% url  'signup' %}">Sign Up</a>
+            <a class="a2" href="{% url 'login' %}">Login</a>
+        </div>
+    {% endif %}
+
+{% endblock content %}

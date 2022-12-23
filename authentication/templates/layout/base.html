@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css" rel="stylesheet" />
+    <title>Movie Recommendation Syste</title>    
+    {% block style %}
+    {% endblock style %}
+</head>
+<body>
+    <div class="container">
+        {% block content %}
+        {% endblock content %}
+    </div> 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
+    {% if user.is_authenticated %}
+    <script>
+        $(function() {
+            $.get('/getMovies', (data, status) => {
+                let movies = data.movies;
+                var $select = $('<select/>', {
+                    'class': 'form-control selectpicker',
+                    'data-live-search': 'true'
+                })
+                $select.change(selectMovie)
+                $.each(movies, function(key, value) {
+                    $select.append(`<option value="${value}">${value}</option>`);
+                });
+                $select.appendTo('#searchbar').selectpicker('refresh');
+            })
+
+            let selectMovie = (e) => {
+                e.preventDefault();
+                $.get(`/recommend/${String(e.target.value)}`, (data, status) => {
+                    let movies = data.movies;
+                    let posters = data.posters;
+                    $('#recommended-movies').empty();
+                    for (let index = 0; index < movies.length; index++) {
+                        const movieName = movies[index];
+                        let movieItem = `<div style="padding: 1rem;">
+                                            <img src="${posters[index]}" class="img-responsive" alt="...">
+                                            <p style="font-size: 18px; font-weight: bold; text-align: center;">${movieName}</p>
+                                        </div>`;
+                        $('#recommended-movies').append(movieItem);
+                    }
+                })
+            }
+        });
+    </script>
+    {% endif %}
+</body>
+</html>
